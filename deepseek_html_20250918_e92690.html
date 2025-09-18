@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biscotto della Fortuna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(to right, #b21f1f, #fdbb2d, #b21f1f);
+            border-radius: 10px 10px 0 0;
+        }
+        
+        h1 {
+            color: #8B0000;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scene {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23FDDB2D22" d="M30,30 C50,10 70,20 70,40 C90,40 90,70 70,70 C70,90 40,90 30,70 C10,70 10,40 30,40 C30,20 50,10 30,30 Z"></path></svg>');
+            z-index: 1;
+        }
+        
+        .fortune-cookie {
+            position: relative;
+            width: 280px;
+            height: 150px;
+            background: linear-gradient(to bottom, #f4d382, #d9a34a);
+            border-radius: 50% / 100% 100% 0 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+            z-index: 2;
+        }
+        
+        .fortune-cookie::before {
+            content: "";
+            position: absolute;
+            width: 90%;
+            height: 10px;
+            background: linear-gradient(to bottom, #c88c32, #f4d382, #c88c32);
+            border-radius: 5px;
+            top: 20px;
+        }
+        
+        .fortune-cookie::after {
+            content: "";
+            position: absolute;
+            width: 90%;
+            height: 10px;
+            background: linear-gradient(to bottom, #c88c32, #f4d382, #c88c32);
+            border-radius: 5px;
+            bottom: 20px;
+        }
+        
+        .cookie-crack {
+            position: absolute;
+            width: 5px;
+            height: 100%;
+            background-color: #8B4513;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .fortune-paper {
+            position: absolute;
+            width: 180px;
+            height: 40px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            bottom: 80px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+            z-index: 4;
+        }
+        
+        .katana {
+            position: absolute;
+            width: 300px;
+            height: 20px;
+            background: linear-gradient(to right, #888, #EEE, #888);
+            border-radius: 0 5px 5px 0;
+            top: 50%;
+            right: -300px;
+            transform: translateY(-50%) rotate(15deg);
+            transform-origin: left center;
+            transition: right 0.5s, transform 0.3s;
+            z-index: 3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .katana-handle {
+            position: absolute;
+            width: 80px;
+            height: 24px;
+            background: linear-gradient(to right, #8B4513, #A0522D, #8B4513);
+            border-radius: 5px;
+            left: -80px;
+            top: -2px;
+            box-shadow: -5px 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        #press-btn {
+            background: linear-gradient(to right, #b21f1f, #8B0000);
+            color: white;
+            font-weight: bold;
+        }
+        
+        #restart-btn {
+            background: linear-gradient(to right, #1a2a6c, #2c3e50);
+            color: white;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quote-display {
+            margin-top: 20px;
+            padding: 20px;
+            font-style: italic;
+            color: #333;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        
+        .cut .fortune-cookie {
+            transform: scale(1.1);
+        }
+        
+        .cut .cookie-crack {
+            opacity: 1;
+        }
+        
+        .cut .fortune-paper {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .cut .katana {
+            right: 50%;
+            transform: translateY(-50%) rotate(-5deg);
+        }
+        
+        .show-quote {
+            opacity: 1 !important;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .scene {
+                height: 300px;
+            }
+            
+            .fortune-cookie {
+                width: 200px;
+                height: 100px;
+            }
+            
+            button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Biscotto della Fortuna</h1>
+        
+        <div class="scene">
+            <div class="background"></div>
+            <div class="fortune-cookie">
+                <div class="cookie-crack"></div>
+            </div>
+            <div class="fortune-paper"></div>
+            <div class="katana">
+                <div class="katana-handle"></div>
+            </div>
+        </div>
+        
+        <div class="quote-display">La fortuna sorride agli audaci</div>
+        
+        <div class="controls">
+            <button id="press-btn">Premi</button>
+            <button id="restart-btn">Ricomincia</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scene = document.querySelector('.scene');
+            const fortunePaper = document.querySelector('.fortune-paper');
+            const quoteDisplay = document.querySelector('.quote-display');
+            const pressBtn = document.getElementById('press-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            
+            // 100 frasi positive di filosofi e di incitamento
+            const quotes = [
+                "La vita è ciò che accade mentre sei occupato a fare altri piani. - John Lennon",
+                "Sii il cambiamento che vuoi vedere nel mondo. - Mahatma Gandhi",
+                "L'unica cosa che possiamo decidere è cosa fare con il tempo che ci è dato. - Gandalf",
+                "Il futuro appartiene a coloro che credono nella bellezza dei propri sogni. - Eleanor Roosevelt",
+                "Non importa quanto vai piano, l'importante è non fermarsi. - Confucio",
+                "La felicità non è qualcosa di pronto. Viene dalle tue azioni. - Dalai Lama",
+                "Credi in te stesso e in tutto ciò che sei. - Christian D. Larson",
+                "La vita è un'avventura audace o niente. - Helen Keller",
+                "La migliore preparazione per il domani è fare il tuo meglio oggi. - H. Jackson Brown Jr.",
+                "Il successo di solito arriva a chi è troppo occupato per stare ad aspettarlo. - Henry David Thoreau",
+                "La tua felicità dipende dalle tue azioni. - Buddha",
+                "La mente è tutto. Ciò che pensi, diventi. - Buddha",
+                "La vita è veramente molto semplice; ma noi insistiamo nel renderla complicata. - Confucio",
+                "Scegli un lavoro che ami, e non dovrai lavorare neppure un giorno in vita tua. - Confucio",
+                "La gioia è nelle cose semplici. - Lao Tzu",
+                "Colui che è padrone di sé stesso può terminare una guerra come può cominciarla. - Sun Tzu",
+                "La pazienza è amara, ma il suo frutto è dolce. - Jean-Jacques Rousseau",
+                "La libertà è l'obiettivo di ogni essere umano. - Aristotele",
+                "La vera saggezza sta nel sapere di non sapere. - Socrate",
+                "Conosci te stesso. - Socrate",
+                "La bellezza salverà il mondo. - Fëdor Dostoevskij",
+                "L'unico modo per fare un gran lavoro è amare quello che fai. - Steve Jobs",
+                "Il tempo è denaro. - Benjamin Franklin",
+                "La speranza è un sogno ad occhi aperti. - Aristotele",
+                "La vita deve essere compresa all'indietro, ma vissuta in avanti. - Søren Kierkegaard",
+                "Pensa come un uomo d'azione, agisci come un uomo di pensiero. - Henri Bergson",
+                "La felicità è la sola cosa che si moltiplica dividendola. - Albert Schweitzer",
+                "La semplicità è l'ultima sofisticazione. - Leonardo da Vinci",
+                "La fortuna favorisce la mente preparata. - Louis Pasteur",
+                "La vera ricchezza è la salute, non pezzi d'oro e argento. - Mahatma Gandhi",
+                "Il sorriso che dai oggi può illuminare il domani di qualcuno. - Madre Teresa",
+                "La vita è un eco: ciò che dai, ti torna indietro. - Proverbio orientale",
+                "Le difficoltà rafforzano la mente, come il lavoro irrobustisce il corpo. - Lucio Anneo Seneca",
+                "La felicità non è avere ciò che si desidera, ma desiderare ciò che si ha. - Epicuro",
+                "La gratitudine trasforma ciò che abbiamo in abbastanza. - Epicuro",
+                "La vera libertà è essere padroni della propria vita. - Platone",
+                "La natura non fa nulla di inutile. - Aristotele",
+                "La conoscenza è potere. - Francis Bacon",
+                "La bellezza è negli occhi di chi guarda. - Oscar Wilde",
+                "La vita è come andare in bicicletta: per mantenere l'equilibrio devi muoverti. - Albert Einstein",
+                "La creatività è contagiosa. Trasmettila. - Albert Einstein",
+                "La pace viene da dentro. Non cercarla fuori. - Buddha",
+                "La gentilezza è una lingua che i sordi possono sentire e i ciechi possono vedere. - Mark Twain",
+                "Il coraggio non è la mancanza di paura, ma la capacità di vincerla. - Nelson Mandela",
+                "La migliore vendetta è un enorme successo. - Frank Sinatra",
+                "La vita è 10% cosa mi accade e 90% come reagisco. - Charles Swindoll",
+                "La perseveranza è fallimento dopo fallimento senza perdere entusiasmo. - Winston Churchill",
+                "La mente è come un paracadute. Funziona solo se si apre. - Albert Einstein",
+                "La sola cosa che si frappone tra te e il tuo obiettivo è la storia che continui a raccontarti. - Jordan Belfort",
+                "La determinazione di oggi determina il successo di domani. - Anonimo",
+                "La passione è energia. Sentire il potere che viene dal focalizzare su ciò che ti eccita. - Oprah Winfrey",
+                "La vita è un dono, e mi offre la possibilità di imparare ogni giorno. - Anonimo",
+                "La gioia più grande è nella conquista delle difficoltà. - Napoleone Bonaparte",
+                "La vera misura di un uomo è come tratta qualcuno che non gli può portare assolutamente nulla. - Andy Rooney",
+                "La pazienza è la chiave della contentezza. - Proverbio islamico",
+                "La felicità è un percorso, non una destinazione. - Buddha",
+                "La forza non viene dalla capacità fisica. Viene da una volontà indomita. - Mahatma Gandhi",
+                "La vita è un'attitudine. Sii positivo e le cose positive accadranno. - Anonimo",
+                "La gentilezza è il linguaggio che il sordo può sentire e il cieco può vedere. - Mark Twain",
+                "La gratitudine è la memoria del cuore. - Jean Baptiste Massieu",
+                "La speranza è come il sole: se la perdi, vedi solo ombre. - Proverbio cinese",
+                "La bellezza del vivere sta nei dettagli. - Anonimo",
+                "La saggezza inizia nel meravigliarsi. - Socrate",
+                "La vera educazione è estrarre il meglio da sé stessi. - Mahatma Gandhi",
+                "La vita è fatta di momenti. Catturali. - Anonimo",
+                "La felicità è quando ciò che pensi, ciò che dici e ciò che fai sono in armonia. - Mahatma Gandhi",
+                "La mente che si apre a una nuova idea non tornerà mai alla dimensione precedente. - Albert Einstein",
+                "La creatività è l'intelligenza che si diverte. - Albert Einstein",
+                "La vera amicizia è come la fosforescenza, risplende meglio quando tutto è buio. - Rabindranath Tagore",
+                "La vita non è aspettare che passi la tempesta, ma imparare a ballare sotto la pioggia. - Vivian Greene",
+                "La pazienza è un albero dalla radice amara ma dai frutti dolci. - Proverbio persiano",
+                "La libertà non è worth having if it does not include the freedom to make mistakes. - Mahatma Gandhi",
+                "La felicità è un dono che ci facciamo quando scegliamo di essere felici. - Anonimo",
+                "La gentilezza è la catena che tiene legati gli uomini gli uni agli altri. - Johann Wolfgang von Goethe",
+                "La vita è un viaggio da fare a piedi. - Bruce Chatwin",
+                "La gratitudine trasforma l'abbondanza in sufficiente. - Melody Beattie",
+                "La speranza è il sogno dell'uomo desto. - Aristotele",
+                "La bellezza è potere; un sorriso è la sua spada. - Charles Reade",
+                "La saggezza è la figlia dell'esperienza. - Leonardo da Vinci",
+                "La vera ricchezza è la salute e la libertà, non i pezzi d'oro e d'argento. - Mahatma Gandhi",
+                "La vita è un'opera teatrale che non importa quanto sia lunga, ma quanto sia ben recitata. - Lucio Anneo Seneca",
+                "La felicità è un modo di viaggiare, non una destinazione. - Roy M. Goodman",
+                "La mente è tutto. Ciò che pensi, diventi. - Buddha",
+                "La creatività è vedere ciò che tutti gli altri vedono, ma pensare ciò che nessun altro ha pensato. - Albert Einstein",
+                "La vera amicizia moltiplica il bene nella vita e divide il male. - Baltasar Gracián",
+                "La vita è ciò che noi ne facciamo. - Helen Keller",
+                "La pazienza è la più eroica delle virtù, giacché non ha apparenza. - Giacomo Leopardi",
+                "La libertà è l'ossigeno dell'anima. - Moshe Dayan",
+                "La felicità è reale solo quando condivisa. - Jon Krakauer",
+                "La gentilezza è il sole che scioglie il ghiaccio dell'odio. - Albert Schweitzer",
+                "La vita è un'opportunità, coglila. - Madre Teresa",
+                "La gratitudine è la virtù più nobile e la madre di tutte le altre. - Cicerone",
+                "La speranza è l'unica ape che fa il miele senza fiori. - Robert Ingersoll",
+                "La bellezza è la firma della natura quando ha creato la perfezione. - Oliver Wendell Holmes",
+                "La saggezza è la ricompensa che si riceve per aver ascoltato tutta la stupidità che ci circonda. - Randy K. Milholland",
+                "La vera educazione è imparare a differenziare tra ciò che è importante e ciò che non lo è. - William James",
+                "La vita è breve, l'arte è lunga. - Ippocrate",
+                "La felicità è un profumo che non puoi versare sugli altri senza che ne cadano alcune gocce su te stesso. - Ralph Waldo Emerson",
+                "La mente non è un vaso da riempire, ma un fuoco da accendere. - Plutarco",
+                "La creatività è l'intelligenza che si diverte. - Albert Einstein",
+                "La vera amicizia resiste al tempo, alla distanza e al silenzio. - Isabel Allende",
+                "La vita è come un'eco: se non ti piace quello che ti rimanda, cambia il messaggio che invii. - James Joyce",
+                "La pazienza è la chiave per risolvere tutti i problemi. - Proverbio cinese",
+                "La libertà consiste nell'essere padroni della propria vita. - Platone"
+            ];
+            
+            pressBtn.addEventListener('click', function() {
+                // Seleziona una frase casuale
+                const randomIndex = Math.floor(Math.random() * quotes.length);
+                const selectedQuote = quotes[randomIndex];
+                
+                // Aggiorna il biglietto e il display
+                fortunePaper.textContent = selectedQuote;
+                quoteDisplay.textContent = selectedQuote;
+                
+                // Animazione del taglio
+                scene.classList.add('cut');
+                
+                // Mostra la frase dopo un breve ritardo
+                setTimeout(function() {
+                    quoteDisplay.classList.add('show-quote');
+                }, 1500);
+                
+                // Disabilita il pulsante Premi
+                pressBtn.disabled = true;
+            });
+            
+            restartBtn.addEventListener('click', function() {
+                // Ripristina lo stato iniziale
+                scene.classList.remove('cut');
+                quoteDisplay.classList.remove('show-quote');
+                
+                // Riabilita il pulsante Premi
+                pressBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
